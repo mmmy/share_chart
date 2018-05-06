@@ -216,9 +216,12 @@ var data = [
         ['2013/6/13', 2190.1,2148.35,2126.22,2190.1]
   ];
 
+
 class KlineEditorDemo extends React.Component {
   componentDidMount() {
-   this._klineEditor = new KlineEditor(this.refs.kline_editor, data.slice(0, 100));
+   // this._klineEditor = new KlineEditor(this.refs.kline_editor, data.slice(0, 100));
+    const DataManager = window.DataManager
+   this._klineEditor = new KlineEditor(this.refs.kline_editor, DataManager.generateKlinesByLength(3E3));
   }
   render() {
     return <div style={{padding: '40px'}}>
