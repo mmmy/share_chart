@@ -51,7 +51,7 @@ options: {
 **/
 let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C, L,H]
   let ctx = null;
-  let d1 = new Date();
+  // let d1 = new Date();
   if(dom.getContext) {
     ctx = dom.getContext('2d');
   } else {
@@ -94,7 +94,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
     if (typeof options.yMin == 'number') {
       min = options.yMin;
     } else if(typeof options.yMin == 'string') {
-      min -= (parseInt(options.yMin)/100 - 1) * diff;   //相对于diff 便宜
+      min -= (parseInt(options.yMin)/100 - 1) * diff;   //相对于diff 偏移
     }
   }
   if(options && options.yMax) {

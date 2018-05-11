@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+  <h2>svg</h2>
+  <svg width="200" height="250" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <!-- 矩形 -->
+    <rect x="10" y="10" width="30" height="30" stroke="black" fill="transparent" stroke-width="5"/>
+    <!-- 圆角矩形 -->
+    <rect x="60" y="10" rx="10" ry="10" width="30" height="30" stroke="black" fill="transparent" stroke-width="5"/>
+    <!-- 圆 -->
+    <circle cx="25" cy="75" r="20" stroke="red" fill="transparent" stroke-width="5"/>
+    <!-- 椭圆 -->
+    <ellipse cx="75" cy="75" rx="20" ry="5" stroke="red" fill="transparent" stroke-width="5"/>
+    <!-- 直线 -->
+    <line x1="10" x2="50" y1="110" y2="150" stroke="orange" fill="transparent" stroke-width="5"/>
+    <!-- 折线 -->
+    <polyline points="60 110 65 120 70 115 75 130 80 125 85 140 90 135 95 150 100 145"
+      stroke="orange" fill="transparent" stroke-width="5"/>
+   <!-- 闭合区域 -->
+    <polygon points="50 160 55 180 70 180 60 190 65 205 50 195 35 205 40 190 30 180 45 180"
+      stroke="green" fill="transparent" stroke-width="5"/>
+    <!-- 二次贝塞尔曲线 -->
+    <path d="M20,230 Q40,205 50,230 T90,230" fill="none" stroke="blue" stroke-width="5"/>
+  </svg>
+  <h2>cavas</h2>
+  <div>
+    <canvas width="200" height="250" id="canvas-chart"></canvas>
+  </div>
+  <script type="text/javascript">
+    var canvasDom = document.getElementById('canvas-chart')
+    var ctx = canvasDom.getContext('2d')
+    // 矩形
+    ctx.strokeStyle = 'black'
+    ctx.lineWidth = 5
+    ctx.strokeRect(10, 10, 30, 30)
+    // 圆角矩形
+    var r = {
+      x: 60,
+      y: 10,
+      rx: 10,
+      ry: 10,
+      w: 30,
+      h: 30,
+    }
+    ctx.beginPath()
+    ctx.moveTo(r.x + r.rx, r.y)
+    ctx.lineTo(r.x + r.w - r.rx, r.y)
+    ctx.quadraticCurveTo(r.x + r.w, r.y, r.x + r.w, r.y + r.ry)
+    ctx.lineTo(r.x + r.w, r.y + r.h - r.ry)
+    ctx.quadraticCurveTo(r.x + r.w, r.y + r.h, r.x + r.w - r.rx, r.y + r.h)
+    ctx.lineTo(r.x + r.rx, r.y + r.h)
+    ctx.quadraticCurveTo(r.x, r.y + r.h, r.x, r.y + r.h - r.ry)
+    ctx.lineTo(r.x, r.y + r.ry)
+    ctx.quadraticCurveTo(r.x, r.y, r.x + r.rx, r.y)
+    ctx.stroke()
+    // 圆
+    ctx.beginPath()
+    ctx.strokeStyle = 'red'
+    ctx.lineWidth = 5
+    ctx.arc(25, 75, 20, 0, 2 * Math.PI)
+    ctx.stroke()
+    // 椭圆
+    ctx.beginPath()
+    ctx.ellipse(75, 75, 20, 5, 0, 0, 2 * Math.PI)
+    ctx.stroke()
+    // 直线
+    ctx.beginPath()
+    ctx.moveTo(10, 110)
+    ctx.lineTo(50, 150)
+    ctx.strokeStyle = 'orange'
+    ctx.stroke()
+    // 折线
+    ctx.beginPath()
+    ctx.moveTo(60, 110)
+    var points = [
+      [65, 120], [70, 115], [75, 130],
+      [80, 125], [85, 140], [90, 135],
+      [95, 150], [100, 145]
+    ]
+    points.forEach(function(point) {
+      ctx.lineTo.apply(ctx, point)
+    })
+    ctx.stroke()
+    // 闭合曲线
+    ctx.beginPath()
+    var starPts = [
+      [55, 180], [70, 180],
+      [60, 190], [65, 205],
+      [50, 195], [35, 205],
+      [40, 190], [30, 180],
+      [45, 180]
+    ]
+    ctx.moveTo(50, 160)
+    starPts.forEach(function(point) {
+      ctx.lineTo.apply(ctx, point)
+    })
+    ctx.closePath()
+    ctx.strokeStyle = 'green'
+    ctx.stroke()
+    // 贝塞尔曲线
+    ctx.beginPath()
+    ctx.moveTo(20, 230)
+    ctx.quadraticCurveTo(40, 205, 50, 230)
+    ctx.quadraticCurveTo(60, 255, 90, 230)
+    ctx.strokeStyle = 'blue'
+    ctx.stroke()
+  </script>
+</body>
+</html>

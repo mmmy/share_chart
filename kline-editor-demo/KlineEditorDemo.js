@@ -218,22 +218,62 @@ var data = [
 
 
 class KlineEditorDemo extends React.Component {
-  componentDidMount() {
-   // this._klineEditor = new KlineEditor(this.refs.kline_editor, data.slice(0, 100));
-    const DataManager = window.DataManager
-   this._klineEditor = new KlineEditor(this.refs.kline_editor, DataManager.generateKlinesByLength(3E3));
+  constructor(props) {
+    super(props)
+    this.state = {
+        valueLength: 1000
+    }
   }
+
+  componentDidMount() {
+    this._klineEditor = new KlineEditor(this.refs.kline_editor, DataManager.generateKlinesByLength(this.state.valueLength));
+    let date = null
+    this._klineEditor.onUpdateCanvasStart(() => {
+        date = new Date()
+    })
+    this._klineEditor.onUpdateCanvasComplete(() => {
+        const ms = new Date() - date
+        const fps = 1000 / ms
+        const str = `(${ms}ms) ${fps}`
+        this._fpsNode.innerText = str
+    })
+  }
+
   render() {
+    const { valueLength } = this.state
     return <div style={{padding: '40px'}}>
+      <div>
+        <span className="p">数据长度</span>
+        <input type="number" value={valueLength} onChange={this.handleChangeLength.bind(this)}/>
+        <button onClick={this.handleSetChartData.bind(this)}>应用</button>
+        <span className="p" style={{marginLeft: '50px'}}>
+            FPS:
+            <span ref={node => this._fpsNode = node}></span>
+        </span>
+      </div>
       <div ref='kline_editor' style={{border: '1px solid #333', width:'1000px', height:'600px', position:'relative', marginBottom: '10px'}}></div>
-      <div><button onClick={this.handleSelectRange.bind(this)}>选择区域</button><button onClick = {this.handleDelRange.bind(this)}>删除</button></div>
+      <div>
+        <button onClick={this.handleSelectRange.bind(this)}>选择区域</button><button onClick = {this.handleDelRange.bind(this)}>删除</button>
+      </div>
     </div>
   }
+
   handleSelectRange() {
     this._klineEditor.startSelectRange()
   }
+
   handleDelRange() {
     this._klineEditor.removeSelectRange()
+  }
+
+  handleChangeLength(e) {
+    this.setState({
+        valueLength: e.target.value
+    })
+  }
+
+  handleSetChartData() {
+    this._klineEditor.setData(DataManager.generateKlinesByLength(this.state.valueLength))
   }
 }
 

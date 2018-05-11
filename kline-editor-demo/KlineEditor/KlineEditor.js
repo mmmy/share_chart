@@ -119,7 +119,7 @@ KlineEditor.prototype._init = function() {
   this._wrapper.addEventListener('mousemove', this._wrapperMouseMove.bind(this));
   this._wrapper.addEventListener('mousewheel', this._wrapperMouseWheel.bind(this));
 
-  window.addEventListener('resize', this._resize.bind(this));
+  // window.addEventListener('resize', this._resize.bind(this));
 };
 
 KlineEditor.prototype._updateCanvasSize = function() {
@@ -133,8 +133,13 @@ KlineEditor.prototype._resize = function() {
   this.updateCanvas();
 }
 
+KlineEditor.prototype.setData = function(kline) {
+  this._kline = kline
+  this.updateCanvas()
+}
+
 KlineEditor.prototype.dispose = function() {
-  window.removeEventListener('resize', this._resize);
+  // window.removeEventListener('resize', this._resize);
 }
 
 KlineEditor.prototype.insertNewAfterSelectedIndex = function(bars) {
@@ -380,13 +385,15 @@ KlineEditor.prototype.updateHover = function(x, y) {
   this._hoverY = y;
   this.updateCanvas();
 }
-
+// 更新画布
 KlineEditor.prototype.updateCanvas = function(){
   let data = this._kline[this._hoverIndex];
   data && this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2], data[5]);
   //左右padding, 用于x轴 位置和比例变化
   let padding = {left:this._xAxisStates.paddingLeft, right:this._xAxisStates.paddingRight};
-
+  // 测试
+  this._onUpdateCanvasStart && this._onUpdateCanvasStart()
+  
   this._drawKline(this._kline, {
                                 hoverIndex:this._hoverIndex, 
                                 selectedIndex:this._selectedIndex,
@@ -412,6 +419,7 @@ KlineEditor.prototype.updateCanvas = function(){
                                 hoverBackground: this._isLight ? '' : '#aaa',
                                 padding
                               });
+  this._onUpdateCanvasComplete && this._onUpdateCanvasComplete()
   // this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);
 }
 
@@ -502,7 +510,7 @@ KlineEditor.prototype.beginMoveRange = function(x,y) {
   // this._drawKline(this._kline, {hoverIndex:this._hoverIndex, selectedIndex:this._selectedIndex ,activeIndex:this._moveIndex, yMin:this._drawInfo.yMin, yMax:this._drawInfo.yMax});
   this.updateCanvas();
 }
-
+// 移动选中区域
 KlineEditor.prototype.movingRange = function(x, y, left, right) {
   if(this._selectedRange.length > 1) {
     let { klineXSpace } = this._drawInfo;
@@ -704,23 +712,23 @@ KlineEditor.prototype.getHitTest = function(x,y) {
   let isNearRangeRight20 = (x - indexToPoint(this._selectedRange[1]).x <= 0) && (x - indexToPoint(this._selectedRange[1]).x >= -20);
   let isNearRangeLeft = Math.abs(indexToPoint(this._selectedRange[0]).x - x) < 5 ;
   let isNearRangeRight = Math.abs(indexToPoint(this._selectedRange[1]).x - x) < 5 ;
-  //indexRange close
+  //indexRange close, 删除选中区域
   if(isXInRange && isNearRangeRight20 && (y > this._rangeOption.top) && (y < this._rangeOption.top+20)) {
     return RANGE_CLOSE;
   }
-  //: indexRange move
+  //: indexRange move, 移动选中区域
   if(isXInRange && (y > this._rangeOption.top) && (y < this._rangeOption.top+20)) {
     return RANGE_MOVE;
   }
-  //: indexRange left
+  //: indexRange left, 向左扩展选中区域
   if(isNearRangeLeft) {
     return RANGE_LEFT;
   }
-  //: indexRange right
+  //: indexRange right， 向右扩展区域
   if(isNearRangeRight) {
     return RANGE_RIGHT;
   }
-  //range bar up down
+  //range bar up down， 上下移动选中区域
   if(isXInRange && (indexWithY > -1)) {
     return RANGE_BAR_UP_DOWN;
   }
@@ -760,6 +768,14 @@ KlineEditor.prototype.endMoveAKline = function(x,y) {
   this._mouseY = -1;
   // this._drawKline(this._kline, {hoverIndex:this._hoverIndex, selectedIndex:this._selectedIndex ,yMin:this._drawInfo.yMin, yMax:this._drawInfo.yMax});
   this.updateCanvas();
+}
+
+KlineEditor.prototype.onUpdateCanvasStart = function(func) {
+  this._onUpdateCanvasStart = func
+}
+
+KlineEditor.prototype.onUpdateCanvasComplete = function(func) {
+  this._onUpdateCanvasComplete = func
 }
 
 KlineEditor.prototype.onUpdateOHLC = function(func) { //func(O, H, L, C)
