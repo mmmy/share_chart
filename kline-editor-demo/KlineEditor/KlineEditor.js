@@ -737,9 +737,9 @@ KlineEditor.prototype.getHitTest = function(x,y) {
     return RANGE_UP_DOWN;
   }
   //: bar move
-  if(false) {
-    return  BAR_MOVE;
-  }
+  // if(false) {
+  //   return  BAR_MOVE;
+  // }
   //上下移动k线
   if(indexWithY > -1) {
     return MOVE_A_KLINE;

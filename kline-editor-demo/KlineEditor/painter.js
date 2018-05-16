@@ -337,7 +337,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
     ctx.fillRect(rangeX1, offsetTop, rangeX2 - rangeX1, rangeHeight);
     //text
     ctx.beginPath();
-    let text = selectedRange[1] - selectedRange[0] + 1 + '根K线';
+    let text = selectedRange[1] - selectedRange[0] + 1 + '\'s bars';
     ctx.font = `bold ${12*ratio}px Microsoft Yahei`;
     ctx.textAlign = 'center';
     // ctx.lineWidth = 1;
@@ -439,6 +439,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
   //  ctx.stroke();
   // }
   // console.debug('time used', new Date() - d2, new Date() - d1);
+  // 根据canvas 坐标点, 索引到序号
   let pointToIndex = (x, y) => {
     // let ratio = getCanvasPixRatio();
     x *= ratio;
